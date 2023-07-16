@@ -43,11 +43,11 @@ services:
     container_name: wordpress
     depends_on:
       - mariadb
-    restart: always
     networks:
       - inception
     volumes:
       - wp-volume:/var/www/
+    restart: always
 
 volumes:
   wp-volume:
