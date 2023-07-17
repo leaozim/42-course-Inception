@@ -1,6 +1,7 @@
 NAME 			:= inception
 COMPOSE			:= srcs/docker-compose.yml
 VOLUMES_PATH	:= /home/$(USER)/data
+DOMAIN_NAME		:= lade-lim.42.fr
 
 all: build
 
@@ -51,6 +52,6 @@ setup:
 	export VOLUMES_PATH
 	sudo mkdir -p $(VOLUMES_PATH)/wordpress
 	sudo mkdir -p $(VOLUMES_PATH)/mariadb
-	grep $(LOGIN).42.fr /etc/hosts || echo "127.0.0.1 $(LOGIN).42.fr" >> /etc/hosts
+	grep $(DOMAIN_NAME) /etc/hosts || echo "127.0.0.1 $(DOMAIN_NAME)" >> /etc/hosts
 
 .PHONY: all build down re clean fclean ls links
