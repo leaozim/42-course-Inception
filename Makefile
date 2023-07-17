@@ -1,24 +1,26 @@
-name = inception
+name 			:= inception
+COMPOSE			:= srcs/docker-compose.yml
+VOLUMES_PATH	:= /home/$(USER)/data
 
-all: up 
+all: build
 
 up:
 	@printf "Launch configuration ${name}...\n"
-	@bash srcs/requirements/wordpress/tools/set_initial_config.sh
-	@docker-compose -f ./srcs/docker-compose.yml --env-file srcs/.env up -d
+# @bash srcs/requirements/wordpress/tools/set_initial_config.sh
+	@docker-compose -f $(COMPOSE) --env-file srcs/.env up -d
 
-build:
+build: setup
 	@printf "Building configuration ${name}...\n"
-	@bash srcs/requirements/wordpress/tools/set_initial_config.sh
-	@docker-compose -f ./srcs/docker-compose.yml --env-file srcs/.env up -d --build
+# @bash srcs/requirements/wordpress/tools/set_initial_config.sh
+	@docker-compose -f $(COMPOSE) --env-file srcs/.env up -d --build
 
 down:
 	@printf "Stopping configuration ${name}...\n"
-	@docker-compose -f ./srcs/docker-compose.yml --env-file srcs/.env down
+	@docker-compose -f $(COMPOSE) --env-file srcs/.env down
 
 re: down
 	@printf "Rebuild configuration ${name}...\n"
-	@docker-compose -f ./srcs/docker-compose.yml --env-file srcs/.env up -d --build
+	@docker-compose -f $(COMPOSE) --env-file srcs/.env up -d --build
 
 clean: down
 	@printf "Cleaning configuration ${name}...\n"
@@ -46,5 +48,12 @@ links:
 	@echo "Mandatory:"
 	@echo " Wordpress\t\t: https://lade-lim.42.fr/"
 	@echo " Wordpress Admin\t: https://lade-lim.42.fr/wp-admin"
+
+setup:
+	export VOLUMES_PATH
+	sudo mkdir -p $(VOLUMES_PATH)/wordpress
+	sudo mkdir -p $(VOLUMES_PATH)/mariadb
+	grep $(LOGIN).42.fr /etc/hosts || echo "127.0.0.1 $(LOGIN).42.fr" >> /etc/hosts
+	grep VOLUMES_PATH srcs/.env || echo "VOLUMES_PATH=$(VOLUMES_PATH)" >> srcs/.env
 
 .PHONY: all build down re clean fclean ls links
