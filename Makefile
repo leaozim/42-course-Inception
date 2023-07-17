@@ -1,29 +1,27 @@
-name 			:= inception
+NAME 			:= inception
 COMPOSE			:= srcs/docker-compose.yml
 VOLUMES_PATH	:= /home/$(USER)/data
 
 all: build
 
 up:
-	@printf "Launch configuration ${name}...\n"
-# @bash srcs/requirements/wordpress/tools/set_initial_config.sh
+	@printf "Launch configuration $(NAME)...\n"
 	@docker-compose -f $(COMPOSE) --env-file srcs/.env up -d
 
 build: setup
-	@printf "Building configuration ${name}...\n"
-# @bash srcs/requirements/wordpress/tools/set_initial_config.sh
+	@printf "Building configuration $(NAME)...\n"
 	@docker-compose -f $(COMPOSE) --env-file srcs/.env up -d --build
 
 down:
-	@printf "Stopping configuration ${name}...\n"
+	@printf "Stopping configuration $(NAME)...\n"
 	@docker-compose -f $(COMPOSE) --env-file srcs/.env down
 
 re: down
-	@printf "Rebuild configuration ${name}...\n"
+	@printf "Rebuild configuration $(NAME)...\n"
 	@docker-compose -f $(COMPOSE) --env-file srcs/.env up -d --build
 
 clean: down
-	@printf "Cleaning configuration ${name}...\n"
+	@printf "Cleaning configuration $(NAME)...\n"
 	@-docker system prune -a
 	@-sudo rm -rf ~/data/
 
@@ -54,6 +52,5 @@ setup:
 	sudo mkdir -p $(VOLUMES_PATH)/wordpress
 	sudo mkdir -p $(VOLUMES_PATH)/mariadb
 	grep $(LOGIN).42.fr /etc/hosts || echo "127.0.0.1 $(LOGIN).42.fr" >> /etc/hosts
-	grep VOLUMES_PATH srcs/.env || echo "VOLUMES_PATH=$(VOLUMES_PATH)" >> srcs/.env
 
 .PHONY: all build down re clean fclean ls links
